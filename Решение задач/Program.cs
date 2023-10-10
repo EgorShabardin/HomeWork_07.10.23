@@ -1,14 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Решение_задач
-{   /// <summary>
-    /// Структура, содержащая данные о студенте (имя фамилия, год рождения, экзамен, балл), а также метод, который заполняет структуру.
-    /// </summary>
+{
     class Program
-    {
+    {   
+        /// <summary>
+        /// Структура, содержащая данные о студенте (имя фамилия, год рождения, экзамен, балл) и метод, который заполняет структуру.
+        /// </summary>
         struct Student
         {
             public string name;
@@ -27,8 +29,8 @@ namespace Решение_задач
 
                 name = studentDataArray[0];
                 surname = studentDataArray[1];
-                ParseResult.Item1 = int.TryParse(studentDataArray[2], out birthdayYear);
                 exam = studentDataArray[3];
+                ParseResult.Item1 = int.TryParse(studentDataArray[2], out birthdayYear);
                 ParseResult.Item2 = int.TryParse(studentDataArray[4], out examScores);
 
                 return ParseResult;
@@ -37,32 +39,155 @@ namespace Решение_задач
         /// <summary>
         /// Метод, который выводит список студентов на экран.
         /// </summary>
-        /// <param name="studentsList"> Словарь со студентами </param>
-        static void DisplayStudentsList(Dictionary<string, Student> studentsList)
+        /// <param name="studentsList"> Словарь, содержащий студентов </param>
+        static void DisplayStudentsDictionary(Dictionary<string, Student> studentsDictionary)
         {
             Console.WriteLine("{0, 68}", "СПИСОК СТУДЕНТОВ\n");
             Console.WriteLine("{0, 10} {1, 22} {2, 27} {3, 22} {4, 20}\n", "Имя", "Фамилия", "Год_рождения", "Экзамен", "Баллы");
 
-            foreach (var student in studentsList)
+            for (int i = 0; i < studentsDictionary.Count; i++)
             {
-                Console.WriteLine("{0, 10} {1, 22} {2, 27} {3, 22} {4, 20}", student.Value.name, student.Value.surname,
-                                  student.Value.birthdayYear, student.Value.exam, student.Value.examScores);
+                KeyValuePair<string, Student> student = studentsDictionary.ElementAt(i);
+                Console.WriteLine("{0, 10} {1, 22} {2, 27} {3, 22} {4, 20}", student.Value.name, student.Value.surname, 
+                                             student.Value.birthdayYear, student.Value.exam, student.Value.examScores);
             }
             Console.WriteLine();
         }
-        struct GrandMother
+        /// <summary>
+        /// Структура, содержащая данные о бабуле (имя, возраст, болезни, лекарства) и метод, который заполняет структуру.
+        /// </summary>
+        struct Grandmother
         {
             public string name;
             public int age;
             public string[] illnesses;
             public string[] medicines;
+            /// <summary>
+            /// Медод, заполняющий структуру Grandmother
+            /// </summary>
+            /// <param name="grannyName"> Строка, содержащая имя бабули </param>
+            /// <param name="grannyBirthdayYear"> Целое число - год рождения бабули </param>
+            /// <param name="grannyIllnesses"> Массив строк - болезни бабули </param>
+            /// <param name="grannyMedicines"> Массив строк - лекарства бабули </param>
+            public void FillingsGrandMotherData(string grannyName, int grannyBirthdayYear, string[] grannyIllnesses, string[] grannyMedicines)
+            {
+                int todayYear = DateTime.Today.Year;
+
+                name = grannyName;
+                age = todayYear - grannyBirthdayYear;
+                illnesses = grannyIllnesses;
+                medicines = grannyMedicines;
+            }
         }
+        /// <summary>
+        /// Структура, содержащая данные о больнице (название, болезни, количество бабуль сегодня, максимальное количество бабуль.
+        /// </summary>
         struct Hospital
         {
             public string name;
             public string[] illnesses;
             public int patientsToday;
             public int patientsTotal;
+        }
+        /// <summary>
+        /// Метод, распределяющий бабуль по больницам
+        /// </summary>
+        /// <param name="grandmotherQueue"> Очередь, содержащая бабуль </param>
+        /// <param name="hospitalsStack"> Стек, содержащий больницы </param>
+        /// <returns> Возвращает true, если бабуля попала в больницу, или false, если бабуля осталась на улице </returns>
+        static bool DistributionGrandmothersToHospitals(Queue<Grandmother> grandmotherQueue, Stack<Hospital> hospitalsStack)
+        {
+            Grandmother granny = grandmotherQueue.Dequeue();
+            int hospitalNumbers = hospitalsStack.Count;
+            double numberEligibleDiseases = 0;
+
+            if (granny.illnesses.Length == 0)
+            {
+                for (int i = 0; i < hospitalNumbers; i++)
+                {
+                    Hospital hospital = hospitalsStack.Pop();
+
+                    if (hospital.patientsToday < hospital.patientsTotal)
+                    {
+                        hospital.patientsToday++;
+                        return true;
+                    }
+                }
+                return false;
+            }
+            else
+            {
+                for (int i = 0; i < hospitalNumbers; i++)
+                {
+                    Hospital hospital = hospitalsStack.Pop();
+
+                    foreach (string illness in granny.illnesses)
+                    {
+                        if (Array.IndexOf(hospital.illnesses, illness.ToLower()) != -1)
+                        {
+                            numberEligibleDiseases++;
+                        }
+                    }
+
+                    if ((numberEligibleDiseases / granny.illnesses.Length * 100) > 50)
+                    {
+                        if (hospital.patientsToday < hospital.patientsTotal)
+                        {
+                            hospital.patientsToday++;
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+        /// <summary>
+        /// Метод, который выводит таблицу больниц на экран
+        /// </summary>
+        /// <param name="hospitalsStack"> Стек, содержащий больницы </param>
+        static void DisplaysHospitalData(List<Hospital> hospitalsStack)
+        {
+            Console.WriteLine("{0, 66}", "Список больниц\n");
+            Console.WriteLine("{0, 15} {1, 36} {2, 30} {3, 25}\n", "Название", "Список болезней", "Пациентов сейчас", "Пациентов максимум");
+
+            for (int i = 0; i < hospitalsStack.Count; i++)
+            {
+                Hospital hospital = hospitalsStack[i];
+                string illnesses = "";
+
+                for (int j = 0; j < hospital.illnesses.Length; j++)
+                {
+                    illnesses += hospital.illnesses[j] + " ";
+                }
+
+                Console.WriteLine("{0, 15} {1, 37} {2, 29} {3, 25}", hospital.name, illnesses, hospital.patientsToday, hospital.patientsTotal);
+            }
+            Console.WriteLine();
+        }
+        /// <summary>
+        /// Метод, который выводит таблицу бабуль на экран
+        /// </summary>
+        /// <param name="grandmothersQueue"> Очередь, содержащая бабуль </param>
+        static void DisplaysGrangmotherData(List<Grandmother> grandmothersList)
+        {
+            Console.WriteLine("{0, 66}", "Список бабуль\n");
+            Console.WriteLine("{0, 15} {1, 36} {2, 30} {3, 25}\n", "Имя", "Список болезней", "Список лекарств", "Возраст");
+
+            for (int i = 0; i < grandmothersList.Count; i++)
+            {
+                Grandmother granny = grandmothersList[i];
+                string illnesses = "";
+                string medicines = "";
+
+                for (int j = 0; j < granny.illnesses.Length; j++)
+                {
+                    illnesses += granny.illnesses[j] + " ";
+                    medicines += granny.medicines[j] + " ";
+                }
+
+                Console.WriteLine("{0, 15} {1, 37} {2, 30} {3, 24}", granny.name, illnesses, medicines, granny.age);
+            }
+            Console.WriteLine();
         }
         static void Main(string[] links)
         {
@@ -85,8 +210,12 @@ namespace Решение_задач
                 switch (taskNumber)
                 {
                     case "1":
-                        break;
+                        //
+                        Console.Clear();
+                        Console.WriteLine();
 
+
+                        break;
                     case "2":
                         // Задание №2. Программа создает словарь студентов и реализует различные действия с этим словарем.
                         Console.Clear();
@@ -123,7 +252,7 @@ namespace Решение_задач
                                                       "Чтобы отсортировать студентов по баллам экзамента, введите             Сортировать\n" +
                                                       "Чтобы закончить работу со списком, введите                             Закончить\n");
 
-                                    DisplayStudentsList(studentsDictionary);
+                                    DisplayStudentsDictionary(studentsDictionary);
                                     Console.Write("Введитите действие, которое вы хотите сделать со списком студентов: ");
                                     actionsStudentsDictionary = Console.ReadLine().ToUpper();
 
@@ -131,7 +260,7 @@ namespace Решение_задач
                                     {
                                         case "НОВЫЙ СТУДЕНТ":
                                             Console.Clear();
-                                            DisplayStudentsList(studentsDictionary);
+                                            DisplayStudentsDictionary(studentsDictionary);
 
                                             Student student = new Student();
 
@@ -160,7 +289,7 @@ namespace Решение_задач
 
                                         case "УДАЛИТЬ":
                                             Console.Clear();
-                                            DisplayStudentsList(studentsDictionary);
+                                            DisplayStudentsDictionary(studentsDictionary);
 
                                             string studentName, studentSurname;
 
@@ -188,7 +317,7 @@ namespace Решение_задач
 
                                         case "СОРТИРОВАТЬ":
                                             Console.Clear();
-                                            DisplayStudentsList(studentsDictionary);
+                                            DisplayStudentsDictionary(studentsDictionary);
 
                                             studentsDictionary = studentsDictionary.OrderBy(data => data.Value.examScores).ToDictionary(data => data.Key, data => data.Value);
                                             Console.Clear();
@@ -221,49 +350,86 @@ namespace Решение_задач
 
                         break;
                     case "3":
-                        //
+                        // Задание №3. Программа получает на вход бабуль и распределяет их по больницам.
                         Console.Clear();
-                        Console.WriteLine();
+                        Console.WriteLine("{0, 100}", "ЗАДАНИЕ №3. ПРОГРАММА ПОЛУЧАЕТ НА ВХОД БАБУЛЬ И РАСПРЕДЕЛЯЕТ ИХ ПО БОЛЬНИЦАМ\n");
 
-                        Queue <GrandMother> grandMothersList = new Queue<GrandMother>();
-                        Stack<Hospital> hospitalList = new Stack<Hospital>();
+                        Queue<Grandmother> grandmothersQueue = new Queue<Grandmother>();
+                        List<Grandmother> grandmothersList = new List<Grandmother>();
+                        List<Hospital> hospitalList = new List<Hospital>();
                         bool grandMotherHospitalTaskEnd = false;
 
                         Hospital firstHospital = new Hospital();
                         firstHospital.name = "Северная";
-                        firstHospital.illnesses = new string[] { "ангина", "простуда", "грипп", "больная спина" };
+                        firstHospital.illnesses = new string[] { "ангина", "простуда", "грипп", "спина" };
                         firstHospital.patientsToday = 0;
                         firstHospital.patientsTotal = 10;
-                        hospitalList.Push(firstHospital);
+                        hospitalList.Add(firstHospital);
 
                         Hospital secondHospital = new Hospital();
                         secondHospital.name = "Южная";
-                        secondHospital.illnesses = new string[] { "больная нога", "простуда", "больное горло", "больная голова" };
+                        secondHospital.illnesses = new string[] { "нога", "простуда", "горло", "голова" };
                         secondHospital.patientsToday = 0;
                         secondHospital.patientsTotal = 5;
-                        hospitalList.Push(secondHospital);
+                        hospitalList.Add(secondHospital);
 
                         Hospital thirdHospital = new Hospital();
                         thirdHospital.name = "Центральная";
-                        thirdHospital.illnesses = new string[] { "больная шея", "больная голова", "ангина", "грипп" };
+                        thirdHospital.illnesses = new string[] { "шея", "голова", "ангина", "грипп" };
                         thirdHospital.patientsToday = 0;
                         thirdHospital.patientsTotal = 3;
-                        hospitalList.Push(thirdHospital);
+                        hospitalList.Add(thirdHospital);
 
                         do
                         {
+                            DisplaysHospitalData(hospitalList);
+                            DisplaysGrangmotherData(grandmothersList);
                             Console.WriteLine("Чтобы закончить выполнение задание, введите закончить");
+                            Grandmother grandmother = new Grandmother();
                             string name;
                             string[] illnesses, medicines;
                             int birthdayYear;
-                            bool result
+                            bool result;
 
                             Console.Write("Введите имя бабули: ");
                             name = Console.ReadLine();
                             Console.Write("Введите год рождения бабули: ");
                             result = int.TryParse(Console.ReadLine(), out birthdayYear);
+                            Console.Write("Введите болезни бабули через пробел: ");
+                            illnesses = Console.ReadLine().Split(new string[] { " ", ",", ", " }, StringSplitOptions.RemoveEmptyEntries);
+                            Console.Write("Введите лекарства бабули через пробел: ");
+                            medicines = Console.ReadLine().Split(new string[] { " ", ",", ", " }, StringSplitOptions.RemoveEmptyEntries);
 
+                            if (result)
+                            {
+                                bool resultGranny;
+                                Stack<Hospital> hospitalStack = new Stack<Hospital>(hospitalList);
 
+                                grandmother.FillingsGrandMotherData(name, birthdayYear, illnesses, medicines);
+                                grandmothersList.Add(grandmother);
+                                grandmothersQueue.Enqueue(grandmother);
+                                resultGranny = DistributionGrandmothersToHospitals(grandmothersQueue, hospitalStack);
+
+                                if (resultGranny)
+                                {
+                                    Console.WriteLine("Бабуля попала в больницу!");
+                                    Console.Write("Чтобы продолжить нажмите на любую кнопку: ");
+                                    Console.ReadKey();
+                                    Console.Clear();
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Бабуля не попала в больницу. Она плачет на улице(");
+                                    Console.Write("Чтобы продолжить нажмите на любую кнопку: ");
+                                    Console.ReadKey();
+                                    Console.Clear();
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Вы ввели некорректные данные. Повторите попытку!");
+                                Console.Clear();
+                            }
                         } while (!grandMotherHospitalTaskEnd);
                         break;
                     case "4":
