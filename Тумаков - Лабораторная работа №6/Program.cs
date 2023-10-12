@@ -246,7 +246,7 @@ namespace Тумаков___Лабораторная_работа__6
 
                         if (userFile.Exists)
                         {
-                            char[] userTextArray = File.ReadAllText(links[0]).ToUpper().ToCharArray();
+                            char[] userTextArray = File.ReadAllText("ProgramFiles/TextForExercise6.1.txt").ToUpper().ToCharArray();
 
                             lettersNumber = CountsLettersFromArray(userTextArray);
 
