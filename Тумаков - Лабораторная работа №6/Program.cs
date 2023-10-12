@@ -36,7 +36,7 @@ namespace Тумаков___Лабораторная_работа__6
 
         /// <summary>
         /// Метод, подсчитывающий количество гласных и согласных букв русского алфавита в передаваемой коллекции.
-        /// </summary>в
+        /// </summary>
         /// <param name="lettersList"> Коллекция символов. </param>
         /// <returns> Возвращает кортеж, первый элемент которого - число гласных букв, второй - число согласных. </returns>
         static (int, int) CountsLettersFromList(List<char> lettersList)

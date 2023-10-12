@@ -384,7 +384,7 @@ namespace Решение_задач
 
                                 parseResult = student.FillingStudentData(studentData);
 
-                                studentsDictionary.Add(studentData[0] + studentData[1], student);
+                                studentsDictionary.Add(studentData[0].ToLower() + studentData[1].ToLower(), student);
                             }
 
                             if (parseResult.Item1 && parseResult.Item2)
@@ -417,7 +417,7 @@ namespace Решение_задач
 
                                             if (parseResult.Item1 && parseResult.Item2 && studentData.Length == 5)
                                             {
-                                                studentsDictionary.Add(studentData[0] + studentData[1], student);
+                                                studentsDictionary.Add(studentData[0].ToLower() + studentData[1].ToLower(), student);
 
                                                 Console.WriteLine("\nВЫ ДОБАВИЛИ НОВОГО СТУДЕНТА!");
                                                 Console.Write("Чтобы продолжить нажмите на любую кнопку ");
@@ -437,27 +437,35 @@ namespace Решение_задач
                                             Console.Clear();
                                             DisplayStudentsDictionary(studentsDictionary);
 
-                                            string studentName, studentSurname;
-
-                                            Console.Write("Введите имя студента, которого необходимо удалить: ");
-                                            studentName = Console.ReadLine();
-                                            Console.Write("Введите фамилию студента, которого необходимо удалить: ");
-                                            studentSurname = Console.ReadLine();
-
-                                            if (studentsDictionary.ContainsKey(studentName + studentSurname))
+                                            if (studentsDictionary.Count != 0)
                                             {
-                                                studentsDictionary.Remove(studentName + studentSurname);
-                                                Console.WriteLine("\nВЫ УДАЛИЛИ СТУДЕНТА!");
-                                                Console.Write("Чтобы продолжить нажмите на любую кнопку ");
-                                                Console.ReadKey();
-                                                Console.Clear();
+                                                string studentName, studentSurname;
+
+                                                Console.Write("Введите имя студента, которого необходимо удалить: ");
+                                                studentName = Console.ReadLine().ToLower();
+                                                Console.Write("Введите фамилию студента, которого необходимо удалить: ");
+                                                studentSurname = Console.ReadLine().ToLower();
+
+                                                if (studentsDictionary.ContainsKey(studentName + studentSurname))
+                                                {
+                                                    studentsDictionary.Remove(studentName + studentSurname);
+                                                    Console.WriteLine("\nВЫ УДАЛИЛИ СТУДЕНТА!");
+                                                    Console.Write("Чтобы продолжить нажмите на любую кнопку ");
+                                                    Console.ReadKey();
+                                                    Console.Clear();
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine("Такого студента в списке нет. Повторите попытку!");
+                                                    Console.Write("Чтобы продолжить нажмите на любую кнопку ");
+                                                    Console.ReadKey();
+                                                    Console.Clear();
+                                                }
                                             }
                                             else
                                             {
-                                                Console.WriteLine("Такого студента в списке нет. Повторите попытку!");
-                                                Console.Write("Чтобы продолжить нажмите на любую кнопку ");
-                                                Console.ReadKey();
                                                 Console.Clear();
+                                                Console.WriteLine("{0, 90}", "Удаление невозможно. Список пуст!");
                                             }
                                             break;
 
