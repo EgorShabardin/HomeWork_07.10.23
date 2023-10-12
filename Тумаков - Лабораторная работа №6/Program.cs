@@ -242,7 +242,7 @@ namespace Тумаков___Лабораторная_работа__6
                         Console.WriteLine("{0, 97}", "УПРАЖНЕНИЕ 6.1. ПРОГРАММА ПОДСЧИТЫВАЕТ ЧИСЛО ГЛАСНЫХ И СОГЛАСНЫХ БУКВ В ФАЙЛЕ\n");
 
                         (int, int) lettersNumber;
-                        FileInfo userFile = new FileInfo(links[0]);
+                        FileInfo userFile = new FileInfo("ProgramFiles/TextForExercise6.1.txt");
 
                         if (userFile.Exists)
                         {

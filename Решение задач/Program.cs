@@ -368,14 +368,14 @@ namespace Решение_задач
                         Console.WriteLine("{0, 107}", "ЗАДАНИЕ №2. ПРОГРАММА СОЗДАЕТ СЛОВАРЬ СТУДЕНТОВ И РЕАЛИЗУЕТ РАЗЛИЧНЫЕ ДЕЙСТВИЯ С ЭТИМ СЛОВАРЕМ\n");
 
                         Dictionary<string, Student> studentsDictionary = new Dictionary<string, Student>();
-                        FileInfo studentsDataFile = new FileInfo(links[0]);
+                        FileInfo studentsDataFile = new FileInfo("ProgramFiles/StudentsList.txt");
                         string actionsStudentsDictionary;
                         (bool, bool) parseResult = (false, false);
                         bool actionsStudentsDictionaryEnd = false;
 
                         if (studentsDataFile.Exists)
                         {
-                            string[] studentDataArray = File.ReadAllLines(links[0]);
+                            string[] studentDataArray = File.ReadAllLines("ProgramFiles/StudentsList.txt");
 
                             for (int i = 0; i < studentDataArray.Length; i++)
                             {
