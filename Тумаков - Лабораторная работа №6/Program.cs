@@ -337,11 +337,11 @@ namespace Тумаков___Лабораторная_работа__6
                         Console.Clear();
                         Console.WriteLine("{0, 100}", "ДОМАШНЕЕ ЗАДАНИЕ 6.1. ПРОГРАММА ИЗ УПРАЖНЕНИЯ 6.1, НО ИСПОЛЬЗУЮТСЯ КОЛЛЕКЦИИ LIST\n");
 
-                        userFile = new FileInfo(links[0]);
+                        userFile = new FileInfo("ProgramFiles/TextForExercise6.1.txt");
 
                         if (userFile.Exists)
                         {
-                            List<char> userTextList = new List<char>(File.ReadAllText(links[0]).ToUpper().ToCharArray());
+                            List<char> userTextList = new List<char>(File.ReadAllText("ProgramFiles/TextForExercise6.1.txt").ToUpper().ToCharArray());
 
                             lettersNumber = CountsLettersFromList(userTextList);
 
